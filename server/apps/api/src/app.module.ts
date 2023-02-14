@@ -62,42 +62,6 @@ import { addTransactionalDataSource } from 'typeorm-transactional';
       renderPath: '/',
     }),
 
-    // WinstonModule.forRoot({
-    //   transports: [
-    //     new winston.transports.Console({
-    //       level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
-    //       format: winston.format.combine(
-    //         winston.format.colorize({ all: true }),
-    //         winston.format.timestamp(),
-    //         nestWinstonModuleUtilities.format.nestLike('mathtutor-api', { prettyPrint: true }),
-    //       ),
-    //     }),
-    //     new WinstonDaily({
-    //       datePattern: 'YYYY-MM-DD',
-    //       dirname: path.join(process.cwd(), '/logs'),
-    //       filename: '%DATE%.common.log',
-    //       maxFiles: 7,
-    //       format: winston.format.combine(
-    //         winston.format.colorize({ all: true }),
-    //         winston.format.timestamp(),
-    //         nestWinstonModuleUtilities.format.nestLike('mathtutor-api', { prettyPrint: true }),
-    //       ),
-    //     }),
-    //     new WinstonDaily({
-    //       level: 'error',
-    //       datePattern: 'YYYY-MM-DD',
-    //       dirname: path.join(process.cwd(), '/logs'),
-    //       filename: '%DATE%.error.log',
-    //       maxFiles: 7,
-    //       format: winston.format.combine(
-    //         winston.format.colorize({ all: true }),
-    //         winston.format.timestamp(),
-    //         nestWinstonModuleUtilities.format.nestLike('mathtutor-api', { prettyPrint: true }),
-    //       ),
-    //     }),
-    //   ],
-    // }),
-
     BaseModule,
     RedisModule,
     AuthModule,
