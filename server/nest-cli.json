@@ -1,0 +1,174 @@
+{
+  "language": "ts",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/api/src",
+  "root": "apps/api",
+  "entryFile": "app",
+  "monorepo": true,
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": { "introspectComments": true }
+      }
+    ],
+    "tsConfigPath": "apps/api/tsconfig.app.json",
+    "deleteOutDir": true,
+    "webpack": false
+  },
+  "projects": {
+    "api": {
+      "type": "application",
+      "root": "apps/api",
+      "entryFile": "app",
+      "sourceRoot": "apps/api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api/tsconfig.app.json"
+      }
+    },
+    "batch": {
+      "type": "application",
+      "root": "apps/batch",
+      "entryFile": "app",
+      "sourceRoot": "apps/batch/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/batch/tsconfig.app.json"
+      }
+    },
+    "processor": {
+      "type": "application",
+      "root": "apps/processor",
+      "entryFile": "app",
+      "sourceRoot": "apps/processor/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/processor/tsconfig.app.json"
+      }
+    },
+    "modules": {
+      "type": "library",
+      "root": "libs/modules",
+      "entryFile": "index",
+      "sourceRoot": "libs/modules/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/modules/tsconfig.lib.json"
+      }
+    },
+    "config": {
+      "type": "library",
+      "root": "libs/config",
+      "entryFile": "index",
+      "sourceRoot": "libs/config/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/config/tsconfig.lib.json"
+      }
+    },
+    "constant": {
+      "type": "library",
+      "root": "libs/constant",
+      "entryFile": "index",
+      "sourceRoot": "libs/constant/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/constant/tsconfig.lib.json"
+      }
+    },
+    "type": {
+      "type": "library",
+      "root": "libs/type",
+      "entryFile": "index",
+      "sourceRoot": "libs/type/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/type/tsconfig.lib.json"
+      }
+    },
+    "base": {
+      "type": "library",
+      "root": "libs/base",
+      "entryFile": "index",
+      "sourceRoot": "libs/base/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/base/tsconfig.lib.json"
+      }
+    },
+    "decorator": {
+      "type": "library",
+      "root": "libs/decorator",
+      "entryFile": "index",
+      "sourceRoot": "libs/decorator/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/decorator/tsconfig.lib.json"
+      }
+    },
+    "exception": {
+      "type": "library",
+      "root": "libs/exception",
+      "entryFile": "index",
+      "sourceRoot": "libs/exception/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/exception/tsconfig.lib.json"
+      }
+    },
+    "filter": {
+      "type": "library",
+      "root": "libs/filter",
+      "entryFile": "index",
+      "sourceRoot": "libs/filter/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/filter/tsconfig.lib.json"
+      }
+    },
+    "guard": {
+      "type": "library",
+      "root": "libs/guard",
+      "entryFile": "index",
+      "sourceRoot": "libs/guard/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/guard/tsconfig.lib.json"
+      }
+    },
+    "interceptor": {
+      "type": "library",
+      "root": "libs/interceptor",
+      "entryFile": "index",
+      "sourceRoot": "libs/interceptor/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/interceptor/tsconfig.lib.json"
+      }
+    },
+    "meta": {
+      "type": "library",
+      "root": "libs/meta",
+      "entryFile": "index",
+      "sourceRoot": "libs/meta/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/meta/tsconfig.lib.json"
+      }
+    },
+    "middleware": {
+      "type": "library",
+      "root": "libs/middleware",
+      "entryFile": "index",
+      "sourceRoot": "libs/middleware/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/middleware/tsconfig.lib.json"
+      }
+    },
+    "transformer": {
+      "type": "library",
+      "root": "libs/transformer",
+      "entryFile": "index",
+      "sourceRoot": "libs/transformer/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/transformer/tsconfig.lib.json"
+      }
+    },
+    "util": {
+      "type": "library",
+      "root": "libs/util",
+      "entryFile": "index",
+      "sourceRoot": "libs/util/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/util/tsconfig.lib.json"
+      }
+    }
+  }
+}

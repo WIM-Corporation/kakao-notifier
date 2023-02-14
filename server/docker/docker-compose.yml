@@ -1,0 +1,25 @@
+version: '3.6'
+
+services:
+  mariadb:
+    container_name: mariadb
+    build:
+      context: ./mariadb
+      dockerfile: mariadb.dockerfile
+    ports:
+      - "15306:3306"
+    restart: always
+    volumes:
+      - ./mariadb/data:/data
+    env_file:
+      - ./mariadb/.env
+  
+  redis:
+    container_name: redis
+    image: 'redis:latest'
+    ports:
+      - '8001:6379'
+    environment:
+      - 'REDIS_ARGS=--appendonly yes'
+    volumes:
+      - ./redis/data:/data
