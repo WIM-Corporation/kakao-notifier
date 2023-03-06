@@ -1,5 +1,4 @@
 import { TokenInjectedUserDto } from '@api/modules/user';
-import { ERole } from '@libs/constant';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport';
@@ -13,7 +12,7 @@ export class PublicStrategy extends PassportStrategy(Strategy, 'isPublic') {
         [Symbol.for('isPublic')]: true,
         id: '',
         displayName: '',
-        role: ERole.UNAUTHORIZED.code,
+        avatar: '',
       }),
     );
   }

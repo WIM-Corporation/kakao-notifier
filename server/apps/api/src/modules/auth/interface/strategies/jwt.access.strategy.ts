@@ -17,10 +17,9 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(req: Request, payload: { exp: number; iat: number; userId: string }): Promise<TokenInjectedUserDto> {
-    if (!payload.userId) throw new ForbiddenException('사용자 정보를 찾을 수 없습니다.');
+  async validate(req: Request): Promise<TokenInjectedUserDto> {
     const accessToken = req.headers.authorization?.replace('Bearer', '').trim();
     if (!accessToken) throw new BadRequestException('accessToken is empty.');
-    return this.jwtSessionManager.validate(accessToken, payload.userId);
+    return this.jwtSessionManager.validate(accessToken);
   }
 }

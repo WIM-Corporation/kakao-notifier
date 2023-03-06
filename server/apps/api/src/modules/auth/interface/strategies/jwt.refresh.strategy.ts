@@ -22,6 +22,6 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
     if (!refreshToken) throw new BadRequestException('refreshToken is empty.');
     const user = await this.userService.findById(userId);
     if (!user) throw new NotFoundException('사용자 정보를 찾을 수 없습니다.');
-    return this.jwtSessionManager.refresh(refreshToken, user);
+    return this.jwtSessionManager.refresh(refreshToken);
   }
 }

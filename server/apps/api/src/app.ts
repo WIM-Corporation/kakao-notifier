@@ -8,7 +8,20 @@ import { AppModule, setNestApp } from '.';
 
 async function bootstrap(): Promise<string> {
   initializeTransactionalContext();
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, { bufferLogs: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bufferLogs: true,
+    abortOnError: true,
+  });
+
+  process.on('SIGTERM', async () => {
+    await app.close();
+    process.exit(0);
+  });
+
+  process.on('SIGINT', async () => {
+    await app.close();
+    process.exit(0);
+  });
 
   app.enableVersioning({ type: VersioningType.URI });
   app.setGlobalPrefix('/api');

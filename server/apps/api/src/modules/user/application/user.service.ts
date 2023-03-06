@@ -1,7 +1,8 @@
 import { ConflictException, ForbiddenException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { KakaoTokenPayload, KakaoUserPayload } from '@wim-backend/kakao';
 import { User } from '../domain';
 import { UserCommandRepository, UserQueryRepository } from '../infrastructure';
-import { SignupUserDto, UserDto } from './dto';
+import { SignUpUserDto, UserDto } from './dto';
 
 @Injectable()
 export class UserService {
@@ -9,25 +10,23 @@ export class UserService {
 
   constructor(private readonly query: UserQueryRepository, private readonly command: UserCommandRepository) {}
 
-  async findById(id: string): Promise<UserDto | undefined> {
-    const user = await this.query.findById(id);
-    return user ? UserDto.from(user) : undefined;
+  async findById(id: string): Promise<User | null> {
+    return await this.query.findById(id);
   }
 
-  async isDuplicatedDisplayName(displayName: string): Promise<boolean> {
-    return this.query.exists({ where: { displayName } });
+  async checkDuplicate(id: string): Promise<boolean> {
+    return this.query.exists({ where: { id } });
   }
 
-  async getProfile(id: string): Promise<UserDto> {
-    const user = await this.query.getById(id);
-    return UserDto.from(user);
+  async signUpAndLogIn(myInfo: KakaoUserPayload, token: KakaoTokenPayload): Promise<User> {
+    const duplicated = await this.checkDuplicate(myInfo.id);
+    if (duplicated) throw new ConflictException('이미 가입한 회원입니다.');
+    const user = User.from(SignUpUserDto.from(myInfo));
+    return await this.logIn(user, token, myInfo.connected_at);
   }
 
-  async signup(signupUserDto: SignupUserDto): Promise<UserDto> {
-    const user = signupUserDto.toUser();
-    const duplicated = await this.isDuplicatedDisplayName(user.displayName);
-    if (duplicated) throw new ConflictException('이미 사용중인 닉네임입니다.');
-    await this.command.save(user);
-    return UserDto.from(user);
+  async logIn(user: User, token: KakaoTokenPayload, connectedAt: Date): Promise<User> {
+    user.login(token, connectedAt);
+    return await this.command.save(user);
   }
 }

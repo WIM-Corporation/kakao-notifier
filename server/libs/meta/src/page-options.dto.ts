@@ -1,11 +1,15 @@
 // eslint-disable-next-line max-classes-per-file
-import { EOrder, EOrderProps } from '@libs/constant';
 import { EnumFieldOptional, NumberFieldOptional, StringFieldOptional } from '@wim-backend/api-property';
 import { IOrder, IQSearch } from '.';
 
+export enum EOrder {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
 export class OffsetPageOptionsDto<T extends Array<string> = any, U extends string = any> implements IQSearch, IOrder {
-  @EnumFieldOptional(() => EOrder.asString(), { default: EOrder.ASC.code })
-  readonly order: EOrderProps = EOrder.DESC.code;
+  @EnumFieldOptional(() => EOrder, { default: EOrder.ASC })
+  readonly order: EOrder = EOrder.DESC;
 
   @StringFieldOptional()
   readonly orderColumnName!: U;
@@ -28,7 +32,7 @@ export class OffsetPageOptionsDto<T extends Array<string> = any, U extends strin
 }
 
 export class CursorPageOptionsProps<T extends Array<string> = any> implements IQSearch {
-  readonly order?: EOrderProps;
+  readonly order?: EOrder;
   // readonly orderColumnName!: U;
   readonly qColumnNames?: T;
   readonly q?: string;
@@ -38,8 +42,8 @@ export class CursorPageOptionsProps<T extends Array<string> = any> implements IQ
 }
 
 export class CursorPageOptionsDto<T extends Array<string> = any> implements IQSearch {
-  @EnumFieldOptional(() => EOrder.asString(), { default: EOrder.ASC.code })
-  readonly order: EOrderProps = EOrder.DESC.code;
+  @EnumFieldOptional(() => EOrder, { default: EOrder.ASC })
+  readonly order: EOrder = EOrder.DESC;
 
   @StringFieldOptional({ isArray: true })
   readonly qColumnNames?: T;

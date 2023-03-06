@@ -94,6 +94,9 @@ declare global {
       FIREBASE_CLIENT_CERT_URL: string;
       FIREBASE_DATABASE_URL: string;
       FIREBASE_API_KEY: string;
+
+      KAKAO_REST_API_KEY: string;
+      KAKAO_REDIRECT_URI: string;
     }
   }
 

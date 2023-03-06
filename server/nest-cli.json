@@ -14,7 +14,7 @@
     ],
     "tsConfigPath": "apps/api/tsconfig.app.json",
     "deleteOutDir": true,
-    "webpack": false
+    "webpack": true
   },
   "projects": {
     "api": {
@@ -60,15 +60,6 @@
       "sourceRoot": "libs/config/src",
       "compilerOptions": {
         "tsConfigPath": "libs/config/tsconfig.lib.json"
-      }
-    },
-    "constant": {
-      "type": "library",
-      "root": "libs/constant",
-      "entryFile": "index",
-      "sourceRoot": "libs/constant/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/constant/tsconfig.lib.json"
       }
     },
     "type": {
@@ -150,6 +141,15 @@
       "sourceRoot": "libs/middleware/src",
       "compilerOptions": {
         "tsConfigPath": "libs/middleware/tsconfig.lib.json"
+      }
+    },
+    "pool-manager": {
+      "type": "library",
+      "root": "libs/pool-manager",
+      "entryFile": "index",
+      "sourceRoot": "libs/pool-manager/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/pool-manager/tsconfig.lib.json"
       }
     },
     "transformer": {

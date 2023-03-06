@@ -4,19 +4,18 @@ import { HttpExceptionsFilter } from '@libs/filter';
 import { ThrottlerBehindProxyGuard } from '@libs/guard';
 import { LoggerMiddleware } from '@libs/middleware';
 import { BaseModule } from '@libs/modules/base';
-import { RedisClient, RedisModule } from '@libs/modules/redis';
 import { UserModule } from '@api/modules/user';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
-import { SlackModule } from '@wim-backend/slack';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import '@libs/util/expand-prototype';
-import { DataSource, DataSourceOptions } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
+import { TypeOrmPoolFactory } from '@libs/pool-manager';
+import { KakaoModule, KakaoModuleOptions } from '@wim-backend/kakao';
 
 @Module({
   imports: [
@@ -27,35 +26,32 @@ import { addTransactionalDataSource } from 'typeorm-transactional';
     }),
 
     TypeOrmModule.forRootAsync({
-      useFactory: (configService: ConfigService) => ({
-        ...configService.get<TypeOrmModuleOptions>('db'),
-      }),
-      dataSourceFactory: async (options: DataSourceOptions) => {
+      useFactory: (poolFactory: TypeOrmPoolFactory) => {
+        return {
+          ...poolFactory.createTypeOrmOptions(),
+          pool: poolFactory.createPool(),
+        };
+      },
+      dataSourceFactory: async (options): Promise<DataSource> => {
         if (!options) {
           throw new Error('Invalid options passed');
         }
-        return addTransactionalDataSource(new DataSource(options));
+        return addTransactionalDataSource(await new DataSource(options).initialize());
       },
+
+      inject: [TypeOrmPoolFactory],
+    }),
+
+    ThrottlerModule.forRoot(),
+
+    KakaoModule.forRootAsync({
+      useFactory: (configService: ConfigService) =>
+        ({
+          restApiKey: configService.get('kakao.restApiKey'),
+          redirectUri: configService.get('kakao.redirectUri'),
+        } as KakaoModuleOptions),
       inject: [ConfigService],
     }),
-
-    // FirebaseModule.forRootAsync({
-    //   useFactory: (configService: ConfigService) => ({
-    //     ...(configService.get('firebase') as FirebaseModuleOptions),
-    //   }),
-    //   inject: [ConfigService],
-    // }),
-
-    ThrottlerModule.forRootAsync({
-      inject: [ConfigService, RedisClient],
-      useFactory: (configService: ConfigService, redisClient: RedisClient) => ({
-        ttl: +configService.get('throttle.ttl'),
-        limit: +configService.get('throttle.limit'),
-        storage: new ThrottlerStorageRedisService(redisClient),
-      }),
-    }),
-
-    SlackModule.forRoot({}),
 
     ServeStaticModule.forRoot({
       rootPath: `${__dirname}/../public`,
@@ -63,7 +59,6 @@ import { addTransactionalDataSource } from 'typeorm-transactional';
     }),
 
     BaseModule,
-    RedisModule,
     AuthModule,
     UserModule,
   ],

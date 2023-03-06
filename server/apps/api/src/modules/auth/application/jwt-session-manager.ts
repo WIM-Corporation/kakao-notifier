@@ -1,7 +1,6 @@
 import { JwtToken } from '@api/modules/auth';
 import { TokenInjectedUserDto, UserDto } from '@api/modules/user';
 import { ConfigService } from '@libs/config';
-import { RedisClient } from '@libs/modules/redis';
 import { SessionTime } from '@libs/util/session-time';
 import { ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -12,7 +11,7 @@ export class JwtSessionManager {
   private readonly accessSecret: string;
   private readonly refreshSecret: string;
 
-  constructor(private readonly redis: RedisClient, private readonly configService: ConfigService, private readonly jwtService: JwtService) {
+  constructor(private readonly configService: ConfigService, private readonly jwtService: JwtService) {
     this.accessSecret = configService.get('jwtAccessSecret');
     this.refreshSecret = configService.get('jwtRefreshSecret');
 
@@ -27,16 +26,13 @@ export class JwtSessionManager {
    * 로그인 하며 jwt를 캐시한다.
    */
   async sign(payload: TokenInjectedUserDto): Promise<JwtToken> {
-    const { id: userId } = payload;
+    const { id, displayName, avatar } = payload;
     try {
-      const [accessToken, refreshToken] = await Promise.all([
-        this.jwtService.signAsync({ userId: payload.id }, { secret: this.accessSecret, expiresIn: SessionTime.accessTokenExpireTime() }),
-        this.jwtService.signAsync({ userId }, { secret: this.refreshSecret, expiresIn: SessionTime.refreshTokenExpireTime() }),
-      ]);
-
-      type Token = TokenInjectedUserDto & { accessToken: string };
-      await this.redis.manager.set<Token>(this.accessKey(userId), { accessToken, ...payload }, { ttl: SessionTime.accessTokenExpireTime() });
-      await this.redis.manager.set<string>(this.refreshKey(userId), refreshToken, { ttl: SessionTime.refreshTokenExpireTime() });
+      const accessToken = await this.jwtService.signAsync(
+        { id, displayName, avatar },
+        { secret: this.accessSecret, expiresIn: SessionTime.accessTokenExpireTime() },
+      );
+      const refreshToken = await this.jwtService.signAsync({ accessToken }, { secret: this.refreshSecret, expiresIn: SessionTime.refreshTokenExpireTime() });
 
       return new JwtToken(accessToken, refreshToken);
     } catch (error) {
@@ -45,34 +41,25 @@ export class JwtSessionManager {
   }
 
   /**
-   * 토큰 세션정보를 모두 제거한다
-   */
-  async signout(userId: string): Promise<void> {
-    await this.redis.unlink(this.accessKey(userId), this.refreshKey(userId));
-  }
-
-  /**
    * @description
    * 리프레시 토큰을 사용해 토큰을 재발급한다. 기존 토큰은 폐기한다.
    */
-  async refresh(refreshToken: string, user: UserDto): Promise<JwtToken> {
-    const cachedRefreshToken = await this.redis.manager.get<string>(this.refreshKey(user.id));
-    if (!cachedRefreshToken) throw new UnauthorizedException('존재하지 않는 refresh token 입니다.');
-    if (cachedRefreshToken !== refreshToken) throw new UnauthorizedException('refresh token 정보가 일치하지 않습니다.');
-
-    if (!user) throw new NotFoundException('회원 정보를 찾을 수 없습니다.');
-
+  async refresh(refreshToken: string): Promise<JwtToken> {
     try {
-      return this.sign(TokenInjectedUserDto.from(user));
+      const { accessToken } = await this.jwtService.verifyAsync<{ accessToken: string }>(refreshToken, { secret: this.refreshSecret });
+      const payload = await this.jwtService.verifyAsync<TokenInjectedUserDto>(accessToken, { secret: this.accessSecret });
+      return this.sign(new TokenInjectedUserDto(payload));
     } catch (error) {
       throw new UnauthorizedException('토큰 리프레시 실패');
     }
   }
 
-  async validate(accessToken: string, userId: string): Promise<TokenInjectedUserDto> {
-    const payload = await this.redis.manager.get<TokenInjectedUserDto & { accessToken: string }>(this.accessKey(userId));
-    if (!payload || payload.accessToken !== accessToken) throw new ForbiddenException('세션이 만료되었습니다.');
-    return payload;
+  async validate(accessToken: string): Promise<TokenInjectedUserDto> {
+    try {
+      return await this.jwtService.verifyAsync(accessToken);
+    } catch (error) {
+      throw new UnauthorizedException('jwt verify failed.');
+    }
   }
 
   private accessKey(userId: string): string {

@@ -18,8 +18,9 @@ const util = {
 };
 
 export const configuration = async (): Promise<Config> => {
-  const { config } = <{ config: Default }>await import(`${__dirname}/envs/default`);
-  const { config: environment } = <{ config: Production }>await import(`${__dirname}/envs/${process.env.NODE_ENV || 'development'}`);
+  const { config } = await import('./envs/default');
+  // eslint-disable-next-line @typescript-eslint/keyword-spacing
+  const { config: environment } = <{ config: Production }>await import(`./envs/${process.env.NODE_ENV || 'development'}`);
 
   // object deep merge
   return util.merge(config, environment);

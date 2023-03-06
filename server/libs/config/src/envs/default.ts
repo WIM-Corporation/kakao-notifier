@@ -44,4 +44,9 @@ export const config = {
     databaseUrl: process.env.FIREBASE_DATABASE_URL,
     apiKey: process.env.FIREBASE_API_KEY,
   },
+
+  kakao: {
+    restApiKey: process.env.KAKAO_REST_API_KEY,
+    redirectUri: process.env.KAKAO_REDIRECT_URI,
+  },
 };

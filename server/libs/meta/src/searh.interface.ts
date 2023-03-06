@@ -1,4 +1,4 @@
-import { EOrderProps } from '@libs/constant';
+import { EOrder } from './page-options.dto';
 
 export interface IQSearch {
   qColumnNames?: string[];
@@ -9,5 +9,5 @@ export interface IQSearch {
 export interface IOrder {
   orderColumnName: string;
 
-  order: EOrderProps;
+  order: EOrder;
 }

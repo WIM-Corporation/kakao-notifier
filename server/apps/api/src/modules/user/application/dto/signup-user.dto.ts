@@ -1,20 +1,21 @@
-import { ERole } from '@libs/constant';
-import { DisplaynameFieldOptional, StringFieldOptional } from '@wim-backend/api-property';
-import { User } from '../../domain';
+import { StringField, StringFieldOptional } from '@wim-backend/api-property';
+import { KakaoUserPayload } from '@wim-backend/kakao';
 
-export class SignupUserDto {
-  @DisplaynameFieldOptional({ minLength: 2, maxLength: 8, regexp: /^([a-zA-Z0-9가-힣\x20]){2,20}$/ })
+export class SignUpUserDto {
+  @StringField()
+  id!: string;
+
+  @StringField()
   displayName!: string;
 
   @StringFieldOptional()
   avatar?: string;
 
-  constructor({ displayName, avatar }: { displayName: string; avatar?: string }) {
-    this.displayName = displayName;
-    this.avatar = avatar;
-  }
-
-  toUser(): User {
-    return User.create({ displayName: this.displayName, role: ERole.USER, avatar: this.avatar });
+  static from(kakaoUser: KakaoUserPayload): SignUpUserDto {
+    const dto = new SignUpUserDto();
+    dto.id = kakaoUser.id;
+    dto.displayName = kakaoUser.properties.nickname;
+    dto.avatar = kakaoUser.properties.profile_image;
+    return dto;
   }
 }
