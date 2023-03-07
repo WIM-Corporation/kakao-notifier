@@ -7,24 +7,12 @@ export enum EOrder {
   DESC = 'DESC',
 }
 
-export class OffsetPageOptionsDto<T extends Array<string> = any, U extends string = any> implements IQSearch, IOrder {
-  @EnumFieldOptional(() => EOrder, { default: EOrder.ASC })
-  readonly order: EOrder = EOrder.DESC;
-
-  @StringFieldOptional()
-  readonly orderColumnName!: U;
-
+export class OffsetPageOptionsDto {
   @NumberFieldOptional({ minimum: 1, default: 1, int: true })
   readonly page: number = 1;
 
   @NumberFieldOptional({ minimum: 1, maximum: 30, default: 20, int: true })
   readonly take: number = 20;
-
-  @StringFieldOptional({ isArray: true })
-  readonly qColumnNames?: T;
-
-  @StringFieldOptional()
-  readonly q?: string;
 
   get skip(): number {
     return (this.page - 1) * this.take;

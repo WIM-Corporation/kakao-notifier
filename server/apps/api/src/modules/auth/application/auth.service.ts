@@ -19,7 +19,8 @@ export class AuthService {
       const signedUser = await this.userService.signUpAndLogIn(myInfo, token);
       return this.signJwt(TokenInjectedUserDto.from(UserDto.from(signedUser)));
     }
-    await this.userService.logIn(user, token, myInfo.connected_at);
+
+    await this.userService.logIn(user, token);
     return this.signJwt(TokenInjectedUserDto.from(UserDto.from(user)));
   }
 }

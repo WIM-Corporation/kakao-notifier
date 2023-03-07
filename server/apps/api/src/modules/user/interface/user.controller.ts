@@ -1,19 +1,21 @@
-import { ApiOffsetPageOkResponse, Auth, ReqUser } from '@libs/decorator';
-import { OffsetPageDto } from '@libs/meta';
+import { Auth, ReqUser } from '@libs/decorator';
 import { Controller, Get, HttpCode, HttpStatus, Param, Query } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { SearchUserDto, UserService, UserThumbnailDto } from '../application';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { UserService, UserProfileDto } from '../application';
 
 @ApiTags('user')
 @Controller({ path: 'users', version: ['1'] })
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiOperation({ summary: '유저검색, 사용자, 관리자' })
-  @ApiOffsetPageOkResponse({ type: UserThumbnailDto })
+  @ApiOperation({ summary: '프로필 조회' })
+  @ApiOkResponse({ type: UserProfileDto })
   @HttpCode(HttpStatus.OK)
-  @Get()
-  async searchUsers(@ReqUser() user: Payload, @Query() searchUserDto: SearchUserDto): Promise<OffsetPageDto<any> | any> {}
+  @Auth()
+  @Get('me')
+  async getMyProfile(@ReqUser() user: Payload): Promise<UserProfileDto> {
+    return await this.userService.getProfile(user.id);
+  }
 
   // @ApiOperation({ summary: '프로필 조회, 학생, 튜터, 관리자' })
   // @ApiOkResponse({ type: UserProfileDto })

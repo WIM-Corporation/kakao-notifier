@@ -1,6 +1,6 @@
 import { AuthGuard } from '@libs/guard';
 import { AuthUserInterceptor } from '@libs/interceptor';
-import { applyDecorators, SetMetadata, UseGuards, UseInterceptors } from '@nestjs/common';
+import { applyDecorators, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { Public } from './public.decorator';
 

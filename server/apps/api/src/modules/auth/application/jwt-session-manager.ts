@@ -56,7 +56,7 @@ export class JwtSessionManager {
 
   async validate(accessToken: string): Promise<TokenInjectedUserDto> {
     try {
-      return await this.jwtService.verifyAsync(accessToken);
+      return await this.jwtService.verifyAsync(accessToken, { secret: this.accessSecret });
     } catch (error) {
       throw new UnauthorizedException('jwt verify failed.');
     }

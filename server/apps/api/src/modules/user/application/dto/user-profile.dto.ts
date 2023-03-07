@@ -1,7 +1,7 @@
 import { StringField } from '@wim-backend/api-property';
-import { User } from '../../domain';
+import { User } from '../../domain/user.entity';
 
-export class UserDto {
+export class UserProfileDto {
   @StringField()
   id!: string;
 
@@ -11,11 +11,15 @@ export class UserDto {
   @StringField({ nullable: true })
   avatar!: string | null;
 
-  static from(user: User): UserDto {
-    const dto = new UserDto();
+  @StringField()
+  apiKey!: string;
+
+  static from(user: User): UserProfileDto {
+    const dto = new UserProfileDto();
     dto.id = user.id;
     dto.displayName = user.displayName;
     dto.avatar = user.avatar;
+    dto.apiKey = user.apiKey;
     return dto;
   }
 }

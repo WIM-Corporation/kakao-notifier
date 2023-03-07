@@ -10,6 +10,6 @@ import { User } from './domain';
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [UserController],
   providers: [UserService, UserQueryRepository, UserCommandRepository],
-  exports: [UserService, UserQueryRepository, UserCommandRepository],
+  exports: [UserService, UserQueryRepository],
 })
 export class UserModule {}

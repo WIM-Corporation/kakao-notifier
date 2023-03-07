@@ -16,6 +16,8 @@ import { DataSource } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { TypeOrmPoolFactory } from '@libs/pool-manager';
 import { KakaoModule, KakaoModuleOptions } from '@wim-backend/kakao';
+import { ChannelModule } from './modules/channel';
+import { MessageModule } from './modules/message';
 
 @Module({
   imports: [
@@ -61,6 +63,8 @@ import { KakaoModule, KakaoModuleOptions } from '@wim-backend/kakao';
     BaseModule,
     AuthModule,
     UserModule,
+    ChannelModule,
+    MessageModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: HttpExceptionsFilter },

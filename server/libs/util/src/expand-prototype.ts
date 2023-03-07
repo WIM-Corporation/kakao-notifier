@@ -85,27 +85,6 @@ SelectQueryBuilder.prototype.searchByString = function (q: string, columnNames: 
   return this;
 };
 
-SelectQueryBuilder.prototype.offsetPaginate = async function (pageOptionsDto: OffsetPageOptionsDto, options?: Partial<{ takeAll: boolean }>) {
-  const alias = this.expressionMap.mainAlias;
-
-  if (!options?.takeAll) {
-    this.skip(pageOptionsDto.skip).take(pageOptionsDto.take);
-  }
-
-  if (pageOptionsDto?.q && pageOptionsDto.qColumnNames?.length) {
-    this.searchByString(pageOptionsDto.q, castArray(pageOptionsDto.qColumnNames), alias?.name);
-  }
-
-  if (pageOptionsDto?.order && pageOptionsDto?.orderColumnName) {
-    const key = alias?.name ? `${alias.name}.${pageOptionsDto?.orderColumnName}` : pageOptionsDto?.orderColumnName;
-    this.orderBy({ [key]: pageOptionsDto.order });
-  }
-
-  const [itemCount, entities] = await Promise.all([this.getCount(), this.getMany()]);
-  const pageMetaDto = new OffsetPageMetaDto({ itemCount, pageOptionsDto });
-  return [entities, pageMetaDto];
-};
-
 SelectQueryBuilder.prototype.cursorPaginate = async function (pageOptionsDto: CursorPageOptionsDto, options?: Partial<{ takeAll: boolean }>) {
   const alias = this.expressionMap.mainAlias;
 
