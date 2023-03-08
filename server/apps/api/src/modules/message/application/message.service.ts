@@ -1,6 +1,6 @@
 import { ChannelService } from '@api/modules/channel';
 import { UserService } from '@api/modules/user';
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { KakaoMemoFactory, KakaoMemoService } from '@wim-backend/kakao';
 import { Message } from '../domain';
 import { MessageCommandRepository, MessageQueryRepository } from '../infrastructure';

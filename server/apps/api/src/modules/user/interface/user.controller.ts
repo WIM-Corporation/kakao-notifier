@@ -16,23 +16,4 @@ export class UserController {
   async getMyProfile(@ReqUser() user: Payload): Promise<UserProfileDto> {
     return await this.userService.getProfile(user.id);
   }
-
-  // @ApiOperation({ summary: '프로필 조회, 학생, 튜터, 관리자' })
-  // @ApiOkResponse({ type: UserProfileDto })
-  // @HttpCode(HttpStatus.OK)
-  // @Auth([ERole.STUDENT, ERole.TUTOR, ERole.ADMIN])
-  // @Get('profile/:userId')
-  // async getProfile(@Param('userId') userId: string): Promise<UserProfileDto> {
-  //   return this.userService.getProfile(userId);
-  // }
-
-  // @ApiOperation({ summary: 'fcm 토큰 갱신, 학생, 튜터, 관리자' })
-  // @ApiAcceptedResponse()
-  // @HttpCode(HttpStatus.ACCEPTED)
-  // @Auth([ERole.STUDENT, ERole.TUTOR, ERole.ADMIN])
-  // @Patch('token')
-  // async updateFcmToken(@ReqUser() user: Payload, @Body() updateFcmTokenDto: UpdateFcmTokenDto): Promise<void> {
-  //   updateFcmTokenDto.id = user.id;
-  //   await this.userService.updateFcmToken(updateFcmTokenDto);
-  // }
 }
